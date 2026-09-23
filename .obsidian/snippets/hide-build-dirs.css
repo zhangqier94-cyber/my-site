@@ -1,0 +1,23 @@
+/* 隐藏文件树中的构建/代码目录（只保留写作相关内容） */
+.nav-folder-title[data-path="dist"],
+.nav-folder-title[data-path="dist-preview"],
+.nav-folder-title[data-path="node_modules"],
+.nav-folder-title[data-path="public"],
+.nav-folder-title[data-path="scripts"],
+.nav-folder-title[data-path=".astro"],
+.nav-folder-title[data-path="src/pages"],
+.nav-folder-title[data-path="src/layouts"],
+.nav-folder-title[data-path="src/styles"],
+.nav-folder-title[data-path="src/utils"],
+.nav-folder-title[data-path^="dist/"],
+.nav-folder-title[data-path^="dist-preview/"],
+.nav-folder-title[data-path^="node_modules/"],
+.nav-folder-title[data-path^="public/"],
+.nav-folder-title[data-path^="scripts/"],
+.nav-folder-title[data-path^=".astro/"],
+.nav-folder-title[data-path^="src/pages/"],
+.nav-folder-title[data-path^="src/layouts/"],
+.nav-folder-title[data-path^="src/styles/"],
+.nav-folder-title[data-path^="src/utils/"] {
+  display: none !important;
+}
