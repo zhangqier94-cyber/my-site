@@ -1,0 +1,46 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const projects = (await getCollection('projects', ({ data }) => !data.draft));
+  return projects.map(project => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const { title, description, role, client, year, tags } = project.data;
+---
+
+<Base title={`${title} · 作品`} description={description} bare>
+  <article class="h-entry">
+    <header>
+      <h1 class="p-name">{title}</h1>
+      <p class="article-info">
+        {[role, client, year, tags.map((t: string) => `#${t}`).join(' ')].filter(Boolean).join(' · ')}
+      </p>
+    </header>
+
+    {description && <section data-field="subtitle" class="p-summary">{description}</section>}
+
+    <section data-field="body" class="e-content">
+      <section class="section section--body section--first section--last">
+        <div class="section-content">
+          <div class="section-inner sectionLayout--insetColumn">
+            <Content />
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <hr class="end-dividers hr-2" data-content="分隔线" />
+
+    <div class="footer-action">
+      <div class="back-to-article"><a href="/works/"><span class="icon-back"></span>作品首页</a></div>
+      <div class="mobile-top"><a href="#" onclick="backToTop(4)"><span class="icon-top"></span>回到顶部</a></div>
+    </div>
+  </article>
+</Base>

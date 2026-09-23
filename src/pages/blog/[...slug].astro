@@ -1,0 +1,33 @@
+---
+/**
+ * 博客详情页：[slug].astro
+ * 自动从 Content Collection 取所有文章，计算上一篇/下一篇
+ */
+import { getCollection, render } from 'astro:content';
+import BlogPost from '../../layouts/BlogPost.astro';
+
+export async function getStaticPaths() {
+  const posts = (await getCollection('blog', ({ data }) => !data.draft))
+    .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+
+  return posts.map((post, idx) => ({
+    params: { slug: post.id },
+    props: {
+      post,
+      prev: idx + 1 < posts.length
+        ? { slug: posts[idx + 1].id, title: posts[idx + 1].data.title }
+        : null,
+      next: idx > 0
+        ? { slug: posts[idx - 1].id, title: posts[idx - 1].data.title }
+        : null,
+    },
+  }));
+}
+
+const { post, prev, next } = Astro.props;
+const { Content } = await render(post);
+---
+
+<BlogPost entry={post} prev={prev} next={next}>
+  <Content />
+</BlogPost>

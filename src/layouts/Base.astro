@@ -1,0 +1,122 @@
+---
+/**
+ * 公共布局 —— 完全对齐原 LRD.IM 结构：
+ * container-fluid 导航 + navOpen/navMask + grow-bg/container.spacing 主体 + sideButton + footer
+ */
+export interface Props {
+  title: string;
+  description?: string;
+  keywords?: string;
+  pageClass?: string; // 对应原站 .container.spacing 上的修饰类（blog / project 等）
+  bare?: boolean;     // true 时不套 grow-bg/container，页面自管主体（如博客详情页）
+}
+
+const {
+  title,
+  description = '个人网站',
+  keywords = '个人网站 博客 笔记',
+  pageClass = '',
+  bare = false,
+} = Astro.props;
+
+const siteName = '我的个人网站';
+const currentPath = Astro.url.pathname;
+
+const navItems = [
+  { label: '作品', href: '/works/' },
+  { label: '博客', href: '/blog/' },
+  { label: '归档', href: '/archive/' },
+  { label: '关于我', href: '/about/' },
+];
+
+function isActive(href: string): boolean {
+  return currentPath.startsWith(href);
+}
+---
+
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content={description}>
+  <meta name="keywords" content={keywords}>
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:site_name" content={siteName} />
+  <link rel="alternate" type="application/atom+xml" title={siteName} href="/rss.xml" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon/favicon-32x32.png" />
+  <title>{title}</title>
+
+  <link rel="stylesheet" href="/css/main.css?v=flh-20260923">
+  <!-- 原站 CSS 隐藏了第 3 个导航项，这里恢复显示全部 4 项 -->
+  <style is:inline>.nav-text-box p:nth-child(3){display:block!important}.box-logo{width:100px}</style>
+  <script src="/js/lazysizes.min.js" async></script>
+  <slot name="head" />
+</head>
+<body>
+  <!-- 导航栏 -->
+  <div class="container-fluid">
+    <header class="box-header">
+      <div class="vw">
+        <a href="/" alt="返回首页">
+          <div class="box-logo"></div>
+        </a>
+        <div class="nav-text-box">
+          {navItems.map(item => (
+            <p>
+              <a
+                href={item.href}
+                class:list={['nav-text', { 'active': isActive(item.href) }]}
+              >{item.label}</a>
+            </p>
+          ))}
+        </div>
+        <div class="icon-menu" id="iconMenu"></div>
+        <div class="icon-close hide" id="iconClose"></div>
+      </div>
+    </header>
+  </div>
+  <!-- end 导航栏 -->
+
+  <div class="nav-open hidden nav-transform" id="navOpen">
+    {navItems.map(item => <a href={item.href}>{item.label}</a>)}
+  </div>
+  <div class="nav-mask hidden" id="navMask"></div>
+
+  <!-- Main container -->
+  {bare ? (
+    <slot />
+  ) : (
+    <div class="grow-bg">
+      <div class:list={['container', 'spacing', pageClass]}>
+        <slot />
+      </div>
+    </div>
+  )}
+  <!-- end Main container -->
+
+  <!-- back to top -->
+  <div id="sideButton">
+    <div class="side-button to-top" id="toTop" onclick="backToTop(4)">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="#232323">
+        <path d="M277.375 427V167.296l119.702 119.702L427 256 256 85 85 256l29.924 29.922 119.701-118.626V427h42.75z"/>
+      </svg>
+    </div>
+  </div>
+  <!-- end back to top -->
+
+  <!-- footer -->
+  <footer>
+    <span>© {siteName} 2026-<span id="footerYear"></span></span>
+  </footer>
+  <!-- end footer -->
+
+  <script is:inline src="/js/custom.js"></script>
+  <script>
+    document.getElementById('footerYear').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

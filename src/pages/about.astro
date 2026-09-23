@@ -1,0 +1,34 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="关于我 · 我的个人网站" description="关于我" pageClass="project">
+  <div class="intro">
+    <h1 class="aurthor">某某某</h1>
+    <p class="desc">这里是一段自我介绍。编辑 src/pages/about.astro 修改这些内容。</p>
+  </div>
+
+  <hr class="common" />
+
+  <div class="section-inner sectionLayout--insetColumn about-body">
+    <h3>我在做什么</h3>
+    <p>用简洁的方式说明你正在做的事 —— 技术、写作、设计、产品都好。</p>
+
+    <h3>写作</h3>
+    <p>我会把一些心得和笔记放在 <a href="/blog/">博客</a>。在 Obsidian 里直接编辑 <code>src/content/blog/</code> 下的 Markdown 文件即可。</p>
+
+    <h3>联系方式</h3>
+    <ul>
+      <li>邮箱：your@email.com</li>
+      <li>GitHub：<a href="https://github.com/" rel="noopener" target="_blank">@yourname</a></li>
+    </ul>
+  </div>
+
+  <style>
+    .about-body { padding: 32px 0 64px; font-size: 16px; line-height: 1.8; }
+    .about-body h3 { margin: 24px 0 12px; }
+    .about-body a { color: var(--link-text-color); }
+    .about-body ul { margin: 12px 0 0 20px; }
+    .about-body li { margin-bottom: 6px; }
+  </style>
+</Base>

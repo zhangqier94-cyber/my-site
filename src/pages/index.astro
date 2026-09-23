@@ -1,0 +1,70 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+  .slice(0, 5);
+
+const projects = (await getCollection('projects', ({ data }) => !data.draft))
+  .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0))
+  .slice(0, 3);
+---
+
+<Base title="我的个人网站" description="个人主页、博客与作品" pageClass="project">
+  <!-- 自我介绍（对齐原站 .intro 结构） -->
+  <div class="intro">
+    <h1 class="aurthor">某某某</h1>
+    <p class="desc">一名设计师 / 工程师，这里是我的个人网站，用来存放作品、博客和<span class="nowrap">思考。</span></p>
+    <p class="desc">改这里：src/pages/index.astro 里的 .intro 区块，换成你自己的<span class="nowrap">介绍。</span></p>
+    <div class="action">
+      <div class="resume">
+        <a href="/about/" title="了解更多">了解更多</a>
+      </div>
+      <div class="contact">
+        <a href="/blog/" title="去博客看看">去博客看看&nbsp;<div class="emoji-hand">👋🏻</div></a>
+      </div>
+    </div>
+  </div>
+
+  <hr class="common" />
+
+  <!-- 精选作品（对齐原站 .experience > .showcase > .item 结构） -->
+  <div class="experience">
+    <div class="showcase">
+      {projects.map(project => (
+        <div class="item">
+          <a href={`/works/${project.id}/`} title={`${project.data.title} 详情`}>
+            <div class="item-container">
+              <img
+                class="lazyload"
+                data-src={project.data.cover || '/img/logo.svg'}
+                alt={project.data.title}
+              />
+              <h3 class="title">{project.data.title}</h3>
+            </div>
+            <div class="desc">{project.data.description}</div>
+          </a>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <hr class="common" />
+
+  <!-- 最近博客（对齐原站 .blog-list 结构） -->
+  <div class="blog-divider"><span class="blog-divider-title">最近博客</span></div>
+  <div class="blog-list">
+    {posts.map(post => (
+      <section>
+        <a href={`/blog/${post.id}/`}>
+          <h2>{post.data.title}</h2>
+          {post.data.description && <p class="blog-subtitle">{post.data.description}</p>}
+        </a>
+        <p class="blog-author">
+          {post.data.pubDate.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-')}
+        </p>
+      </section>
+    ))}
+  </div>
+</Base>

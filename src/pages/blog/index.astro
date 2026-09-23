@@ -1,0 +1,46 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+
+const featured = posts[0];
+const rest = posts.slice(1);
+
+const fmt = (d: Date) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+---
+
+<Base title="博客 · 我的个人网站" description="我的博客" pageClass="blog">
+  {featured && (
+    <!-- 特色博客 -->
+    <section class="blog-hero">
+      <a href={`/blog/${featured.id}/`}>
+        <img
+          class="blog-heroimg lazyload"
+          data-src={featured.data.heroImage || '/img/logo.svg'}
+          width="765"
+          height="574"
+          alt={featured.data.title}
+        />
+        <h2>{featured.data.title}</h2>
+        {featured.data.description && <p class="blog-subtitle">{featured.data.description}</p>}
+      </a>
+    </section>
+  )}
+
+  <div class="blog-divider"><span class="blog-divider-title">从新到旧浏览</span></div>
+
+  <div class="blog-list">
+    {rest.map(post => (
+      <section>
+        <a href={`/blog/${post.id}/`}>
+          <h2>{post.data.title}</h2>
+          {post.data.description && <p class="blog-subtitle">{post.data.description}</p>}
+        </a>
+        <p class="blog-author">{fmt(post.data.pubDate)}</p>
+      </section>
+    ))}
+  </div>
+</Base>

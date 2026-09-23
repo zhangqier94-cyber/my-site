@@ -1,0 +1,82 @@
+---
+/**
+ * 博客详情页布局 —— 完全对齐原 LRD.IM 详情页结构：
+ * article.h-entry + p-name + article-widgets + p-summary + e-content(section-inner) + article-navigation + footer-action
+ */
+import Base from './Base.astro';
+import type { CollectionEntry } from 'astro:content';
+
+export interface Props {
+  entry: CollectionEntry<'blog'>;
+  prev?: { slug: string; title: string } | null;
+  next?: { slug: string; title: string } | null;
+}
+
+const { entry, prev, next } = Astro.props;
+const { title, description, pubDate, tags = [] } = entry.data;
+
+const author = '某某某';
+const pageUrl = Astro.url.href;
+const fmtDate = `${pubDate.getFullYear()}-${String(pubDate.getMonth() + 1).padStart(2, '0')}-${String(pubDate.getDate()).padStart(2, '0')}`;
+---
+
+<Base title={`${title} · 我的博客`} description={description} keywords={tags.join(',')} bare>
+  <article class="h-entry">
+    <header>
+      <h1 class="p-name">{title}</h1>
+      <p class="article-info">{author} · <time datetime={pubDate.toISOString()}>{fmtDate}</time></p>
+      <div class="article-info">
+        <div class="article-widgets">
+          <a href="javascript:" id="blogLinkTop" class="icon-link" title="复制链接" data-clipboard-text={`${title} ${pageUrl}`}></a>
+          <a href="javascript:" id="copiedLinkTop" class="icon-check hide" title="复制链接" data-clipboard-text={`${title} ${pageUrl}`}></a>
+          <a href="/rss.xml" class="icon-rss" rel="noopener" title="订阅 RSS"></a>
+        </div>
+      </div>
+    </header>
+
+    {description && (
+      <section data-field="subtitle" class="p-summary">{description}</section>
+    )}
+
+    <section data-field="body" class="e-content">
+      <section class="section section--body section--first section--last">
+        <div class="section-content">
+          <div class="section-inner sectionLayout--insetColumn">
+            <slot />
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <div class="article-navigation">
+      {prev ? (
+        <a href={`/blog/${prev.slug}/`} class="previous">
+          <p>上一篇</p>
+          <p class="title">{prev.title}</p>
+        </a>
+      ) : <a class="previous hide"></a>}
+      {next ? (
+        <a href={`/blog/${next.slug}/`} class="next">
+          <p>下一篇</p>
+          <p class="title">{next.title}</p>
+        </a>
+      ) : <a class="next hide"></a>}
+    </div>
+
+    <hr class="end-dividers hr-2" data-content="分隔线" />
+
+    <div class="footer-action">
+      <div class="back-to-article"><a href="/blog/"><span class="icon-back"></span>博客首页</a></div>
+      <div class="copy-link" id="copyLink">
+        <a href="javascript:" id="blogLink" data-clipboard-text={`${title} ${pageUrl}`}><span class="icon-link"></span>复制链接</a>
+      </div>
+      <div class="copied hide" id="copied">
+        <a href="javascript:" data-clipboard-text={`${title} ${pageUrl}`}><span class="icon-success"></span>复制成功!</a>
+      </div>
+      <div class="mobile-top"><a href="#" onclick="backToTop(4)"><span class="icon-top"></span>回到顶部</a></div>
+    </div>
+  </article>
+
+  <!-- clipboard（原 custom.js 依赖 ClipboardJS） -->
+  <script is:inline src="/js/clipboard.min.js"></script>
+</Base>
