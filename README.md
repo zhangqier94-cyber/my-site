@@ -4,7 +4,6 @@
 
 ## 项目特点
 
-- ✅ 复用 LRD.IM 原 `main.css` / `custom.js`，视觉一致
 - ✅ 内容是 **Markdown 文件**，无数据库、无 CMS
 - ✅ 在 Obsidian 里写 → `git push` → 自动部署上线
 - ✅ 支持 RSS / sitemap / 上下篇导航 / 复制链接 / 回到顶部
@@ -14,8 +13,8 @@
 ```
 my-site/
 ├── public/                      # 静态资源（直接复制到线上）
-│   ├── css/main.css             # 原 LRD.IM 样式
-│   ├── js/custom.js             # 原 LRD.IM 脚本
+│   ├── css/main.css             # 设计样式
+│   ├── js/custom.js             # AI跑的脚本
 │   └── img/                     # logo、favicon、占位图
 ├── src/
 │   ├── content/
