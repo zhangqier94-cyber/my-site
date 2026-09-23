@@ -1,6 +1,6 @@
 # my-site
 
-基于 [LRD.IM](https://lrd.im) 视觉的个人网站，内容用 Markdown 管理，支持在 **Obsidian** 里直接写作并自动同步到线上。
+个人网站，内容用 Markdown 管理，支持在 **Obsidian** 里直接写作并自动同步到线上。
 
 ## 项目特点
 
