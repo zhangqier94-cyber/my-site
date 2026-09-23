@@ -1,0 +1,22 @@
+{
+  "attachmentFolderPath": "./attachments",
+  "newLinkFormat": "relative",
+  "useMarkdownLinks": true,
+  "alwaysUpdateLinks": true,
+  "showUnsupportedFiles": false,
+  "trashOption": "system",
+  "userIgnoreFilters": [
+    "node_modules/",
+    "dist/",
+    "dist-preview/",
+    ".astro/",
+    "public/",
+    "scripts/",
+    "src/env.d.ts",
+    "src/content.config.ts",
+    "src/pages/",
+    "src/layouts/",
+    "src/styles/",
+    "src/utils/"
+  ]
+}
