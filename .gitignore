@@ -25,8 +25,5 @@ pnpm-debug.log*
 .vscode/
 .idea/dist-preview/
 
-# Obsidian vault（本仓库即 vault，忽略频繁变动的缓存文件）
-.obsidian/workspace.json
-.obsidian/workspace-mobile.json
-.obsidian/cache
-.obsidian/graph.json
+# Obsidian vault（本仓库即 vault，忽略本地配置与缓存）
+.obsidian/
