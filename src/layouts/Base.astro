@@ -23,14 +23,15 @@ const siteName = '我的个人网站';
 const currentPath = Astro.url.pathname;
 
 const navItems = [
-  { label: '作品', href: '/works/' },
+  { label: '作品', href: '/' }, // 首页即作品页
   { label: '博客', href: '/blog/' },
   { label: '归档', href: '/archive/' },
   { label: '关于我', href: '/about/' },
 ];
 
 function isActive(href: string): boolean {
-  return currentPath.startsWith(href);
+  // 首页（/）只在路径完全相同时高亮，其余按前缀匹配
+  return href === '/' ? currentPath === '/' : currentPath.startsWith(href);
 }
 ---
 

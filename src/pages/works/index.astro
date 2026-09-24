@@ -1,41 +1,15 @@
 ---
-import Base from '../../layouts/Base.astro';
-import { getCollection } from 'astro:content';
-
-const projects = (await getCollection('projects', ({ data }) => !data.draft))
-  .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+// 首页（/）现在就是作品页，这里只做跳转，保留 /works/ 旧链接兼容
 ---
-
-<Base title="作品 · 我的个人网站" description="我的作品集" pageClass="project">
-  <!-- 自我介绍（与原站首页 project.html 一致的 .intro 结构） -->
-  <div class="intro">
-    <h1 class="aurthor">某某某</h1>
-    <p class="desc">一名设计师 / 工程师。改这里：src/pages/works/index.astro 的 .intro 区块。</p>
-    <div class="action">
-      <div class="resume"><a href="/about/" title="了解更多">了解更多</a></div>
-    </div>
-  </div>
-
-  <hr class="common" />
-
-  <!-- 作品（对齐原站 .experience > .showcase > .item 结构） -->
-  <div class="experience">
-    <div class="showcase">
-      {projects.map(project => (
-        <div class="item">
-          <a href={`/works/${project.id}/`} title={`${project.data.title} 详情`}>
-            <div class="item-container">
-              <img
-                class="lazyload"
-                data-src={project.data.cover || '/img/logo.svg'}
-                alt={project.data.title}
-              />
-              <h3 class="title">{project.data.title}</h3>
-            </div>
-            <div class="desc">{project.data.description}</div>
-          </a>
-        </div>
-      ))}
-    </div>
-  </div>
-</Base>
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="utf-8">
+  <link rel="canonical" href="/">
+  <meta http-equiv="refresh" content="0; url=/">
+  <title>作品 · 我的个人网站</title>
+</head>
+<body>
+  <p>作品页已移至 <a href="/">首页</a>，正在跳转…</p>
+</body>
+</html>

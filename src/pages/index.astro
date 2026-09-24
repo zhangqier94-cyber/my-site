@@ -1,17 +1,24 @@
 ---
 import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
+import { companies, type Company } from '../data/companies';
 
-const posts = (await getCollection('blog', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
-  .slice(0, 5);
+const allProjects = (await getCollection('projects', ({ data }) => !data.draft))
+  .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
 
-const projects = (await getCollection('projects', ({ data }) => !data.draft))
-  .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0))
-  .slice(0, 3);
+// 按公司分组（顺序跟 src/data/companies.ts 走），没配公司的作品归入「其他作品」
+interface Group extends Company { items: typeof allProjects; }
+const groups: Group[] = companies
+  .map(c => ({ ...c, items: allProjects.filter(p => p.data.company === c.id) }))
+  .filter(g => g.items.length > 0);
+
+const orphans = allProjects.filter(p => !companies.some(c => c.id === p.data.company));
+if (orphans.length > 0) {
+  groups.push({ id: 'others', name: '其他作品', order: 99, items: orphans });
+}
 ---
 
-<Base title="我的个人网站" description="个人主页、博客与作品" pageClass="project">
+<Base title="作品 · 我的个人网站" description="我的作品集" pageClass="project">
   <!-- 自我介绍（对齐原站 .intro 结构） -->
   <div class="intro">
     <h1 class="aurthor">某某某</h1>
@@ -29,42 +36,35 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft))
 
   <hr class="common" />
 
-  <!-- 精选作品（对齐原站 .experience > .showcase > .item 结构） -->
-  <div class="experience">
-    <div class="showcase">
-      {projects.map(project => (
-        <div class="item">
-          <a href={`/works/${project.id}/`} title={`${project.data.title} 详情`}>
-            <div class="item-container">
-              <img
-                class="lazyload"
-                data-src={project.data.cover || '/img/logo.svg'}
-                alt={project.data.title}
-              />
-              <h3 class="title">{project.data.title}</h3>
-            </div>
-            <div class="desc">{project.data.description}</div>
-          </a>
+  <!-- 作品：按公司分组（对齐原站 .experience > .info + .showcase 结构） -->
+  {groups.map(group => (
+    <div class="experience">
+      <div class="info">
+        <div class="company">
+          <div class="name">
+            {group.icon && <span class="icon" style={`background:url('${group.icon}') no-repeat center/100%`}></span>}
+            {group.name}
+          </div>
+          {group.period && <div class="year">{group.period}</div>}
         </div>
-      ))}
+      </div>
+      <div class="showcase">
+        {group.items.map(project => (
+          <div class="item">
+            <a href={`/works/${project.id}/`} title={`${project.data.title} 详情`}>
+              <div class="item-container">
+                <img
+                  class="lazyload"
+                  data-src={project.data.cover || '/img/logo.svg'}
+                  alt={project.data.title}
+                />
+                <h3 class="title">{project.data.title}</h3>
+              </div>
+              <div class="desc">{project.data.description}</div>
+            </a>
+          </div>
+        ))}
+      </div>
     </div>
-  </div>
-
-  <hr class="common" />
-
-  <!-- 最近博客（对齐原站 .blog-list 结构） -->
-  <div class="blog-divider"><span class="blog-divider-title">最近博客</span></div>
-  <div class="blog-list">
-    {posts.map(post => (
-      <section>
-        <a href={`/blog/${post.id}/`}>
-          <h2>{post.data.title}</h2>
-          {post.data.description && <p class="blog-subtitle">{post.data.description}</p>}
-        </a>
-        <p class="blog-author">
-          {post.data.pubDate.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-')}
-        </p>
-      </section>
-    ))}
-  </div>
+  ))}
 </Base>

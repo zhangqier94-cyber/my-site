@@ -26,6 +26,7 @@ const projects = defineCollection({
     cover: z.string().optional(),
     role: z.string().optional(),
     client: z.string().optional(),
+    company: z.string().optional(), // 所属公司（对应 src/data/companies.ts 里的 id），首页按此分组
     year: z.number().optional(),
     tags: z.array(z.string()).default([]),
     link: z.string().url().optional(),

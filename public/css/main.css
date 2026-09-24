@@ -2388,6 +2388,18 @@ article .top-bar {
   }
 }
 
+/* 公司名 + logo 图标同行排列 */
+.project .experience .company .name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.project .experience .company .name .icon {
+  display: inline-block;
+  flex: none;
+}
+
 .project .experience .year {
   font-size: 14px;
   font-weight: 600;
