@@ -2,7 +2,10 @@
 title: 我的网站上线了
 description: 用 Obsidian 写作 + Git 同步 + Astro 构建的个人网站工作流，从今天开始记录。
 pubDate: 2026-09-23
-tags: [建站, 随笔]
+tags:
+  - 建站
+  - 随笔
+heroImage: /img/blog/my-site-start.jpg
 ---
 
 这是这个网站的第一篇文章，也是整套写作工作流的第一次实战。
