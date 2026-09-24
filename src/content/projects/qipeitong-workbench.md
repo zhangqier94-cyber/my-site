@@ -1,7 +1,7 @@
 ---
 title: 汽配通 · 门店工作台
 description: 汽配通业务的门店端工作台，把日常高频操作收进一个入口。占位案例，内容待补充。
-company: jiajiele
+company: giti
 cover: /img/works/placeholder-workbench.jpg
 order: 2
 tags: [B端, 工作台]

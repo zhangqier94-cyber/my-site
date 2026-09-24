@@ -43,7 +43,7 @@ if (orphans.length > 0) {
       <div class="info">
         <div class="company">
           <div class="name">
-            {group.icon && <span class="icon" style={`background:url('${group.icon}') no-repeat center/100%`}></span>}
+            {group.icon && <img class="icon" src={group.icon} alt={group.name} />}
             {group.name}
           </div>
           {group.period && <div class="year">{group.period}</div>}
