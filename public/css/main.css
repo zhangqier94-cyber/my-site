@@ -2820,3 +2820,92 @@ img.zoom-img {
   overflow: hidden;
 }
 /*# sourceMappingURL=main.css.map */
+/* ===== 联系我弹卡（首页） ===== */
+.contact-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0,0,0,.4);
+  opacity: 0;
+  transition: opacity .2s ease;
+}
+
+.contact-mask[hidden] { display: none; }
+
+.contact-mask.show { opacity: 1; }
+
+.contact-card {
+  width: 320px;
+  max-width: 100%;
+  padding: 32px 24px 24px;
+  border-radius: 16px;
+  background: var(--background-color);
+  box-shadow: 0 12px 40px rgba(0,0,0,.2);
+  text-align: center;
+  transform: translateY(8px) scale(.98);
+  transition: transform .2s ease;
+}
+
+.contact-mask.show .contact-card { transform: none; }
+
+.contact-card .qr {
+  display: block;
+  width: 240px;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 8px;
+  box-sizing: content-box;
+  background: #fff;
+  border: 0.5px solid var(--divider-color);
+  border-radius: 12px;
+}
+
+.contact-card .title {
+  margin-top: 16px;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--primary-text-color);
+}
+
+.contact-card .or {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 14px 0 4px;
+  color: var(--tertiary-text-color);
+  font-size: 13px;
+}
+
+.contact-card .or::before,
+.contact-card .or::after {
+  content: "";
+  flex: 1;
+  height: 0.5px;
+  background: var(--divider-color);
+}
+
+.contact-card .copy-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: none;
+  border-radius: var(--border-radius-md);
+  background: var(--button-color);
+  color: var(--primary-text-color);
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color .15s ease;
+}
+
+.contact-card .copy-btn:hover { background: var(--button-hover-color); }
+.contact-card .copy-btn:active { background: var(--button-active-color); }
+.contact-card .copy-btn svg { width: 16px; height: 16px; color: var(--secondary-text-color); }
