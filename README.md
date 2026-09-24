@@ -8,6 +8,57 @@
 - ✅ 在 Obsidian 里写 → `git push` → 自动部署上线
 - ✅ 支持 RSS / sitemap / 上下篇导航 / 复制链接 / 回到顶部
 
+---
+
+## 🖥 换机 / 新电脑部署
+
+> 这一节记录**当前真实在跑的链路**，换电脑时照这个做。
+> 下面「Obsidian 对接工作流」和「部署」两节是早期方案文档，其中 **Obsidian Git 插件、软链接 vault** 的做法现在都**没有使用**，仅供参考。
+
+### 现在实际是怎么跑的
+
+```
+Obsidian 打开 ~/Documents/my-site（仓库根目录本身就是 vault）
+        ↓ 保存 .md、往 public/img 放图片
+site-publish（或手动 git push origin main）
+        ↓
+GitHub Actions：npm ci && astro build
+        ↓
+netlify-cli deploy --prod
+        ↓
+https://zhangqier94-my-site.netlify.app
+```
+
+关键点：**构建和部署都在云端完成**，Netlify 令牌存在仓库的 Actions secrets 里。所以任何一台装了 git 的电脑，只要能 push 到 main，网站就会自动更新——本机环境不是必要环节。
+
+### 新电脑要做的 5 件事
+
+1. **装 git**（想本地预览效果才需要 Node 22+ 和 `npm install`；只发文的话有一定 git 就够了）
+2. **拿到 GitHub 凭据** —— 唯一搬运不过来、又必须有的一样东西：
+   - **复用旧的**：在原来那台 Mac 上打开「钥匙串访问」→ 搜 `github.com` → 双击那条互联网密码 → 显示密码 → 复制 `ghp_...` 开头的字符串，存进密码管理器
+   - **或新建一个**：https://github.com/settings/tokens/new （classic token），勾选 `repo` + `workflow` 两个 scope。生成后页面**只显示一次**，立刻保存
+     > ⚠️ `workflow` 必须勾——少这个 scope，push 会被 GitHub 直接拒绝
+3. **克隆仓库**
+   ```bash
+   git clone https://github.com/zhangqier94-cyber/my-site.git ~/Documents/my-site
+   ```
+4. **第一次 push 时**：Username 填 `zhangqier94-cyber`，Password 粘贴**那串 token**（不是账号密码），弹窗选「始终允许」，之后就会存进这台机器的钥匙串，不用再输
+5. **Obsidian 打开 `~/Documents/my-site` 作为 vault**，然后设置 → 文件与链接 → 附件文件夹设为 `public/img`
+   > `.obsidian/` 被 gitignore 了，所以新电脑上主题、插件、附件目录都得重配一次（好处是两台机器不会因为配置文件打架）
+
+### 两台电脑一起用的规矩
+
+- **开工先 `git pull`，收工必 `site-publish`**。两边都动了同一个文件又没同步，push 会被拒或者产生冲突。
+- 有 AI 帮忙提交时，**只提交它自己动过的文件，不要 `git add -A`**，免得把你在 Obsidian 里没写完的内容一起卷走。
+
+### 待改造（回家后处理）
+
+- [ ] 把 `~/bin/site-publish` 收进仓库（如 `scripts/site-publish`），去掉写死的 `$HOME/Documents/my-site`，改成跟着仓库位置走
+- [ ] 写一个新机初始化脚本：配 PATH、设 branch upstream、提示输入 token，一条命令跑完
+- [ ] 设 upstream：`git branch --set-upstream-to=origin/main main`（当前没设，手动敲不带参数的 `git push` / `git pull` 会报 no upstream branch）
+
+---
+
 ## 目录结构
 
 ```
