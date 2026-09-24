@@ -3,6 +3,7 @@ title: Compositor-macos15
 description: Compositor 中文体验版的 macOS 15 兼容移植，基于 zh-beta-v1.2.2.1，部署目标降至 macOS 15.0
 pubDate: 2026-09-23
 tags: [Swift, macOS, 开源]
+cover: /img/works/compositor.jpg
 github: https://github.com/zhangqier94-cyber/Compositor-macos15
 link: https://github.com/zhangqier94-cyber/Compositor-macos15
 ---
