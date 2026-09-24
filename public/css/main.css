@@ -962,6 +962,12 @@ footer .footer-rss .icon-rss {
   padding-left: 1.5em;
 }
 
+/* 滚动到对应章节时目录项高亮 */
+.blogCatalog a.active {
+  background-color: var(--button-color);
+  font-weight: 600;
+}
+
 @media (min-width: 1200px) {
   .blogCatalog {
     display: block;

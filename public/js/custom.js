@@ -17,45 +17,30 @@ if (e.matches) {
 // ▲▲ 深色模式
 
 // ▼▼ 目录随滚动高亮
-const h3 = document.querySelectorAll('h3');
-const anchor = document.querySelectorAll('.project-anchor');
+const headings = document.querySelectorAll('h2, h3');
 window.addEventListener('scroll', ()=> {
   let current = ''; //定义在页面上半部分的锚点，默认无
 
-  h3.forEach( h3 => { //查找在页面上半部分的锚点是什么
-    const sectionTop = h3.offsetTop;
-    const sectionHeight = h3.clientHeight;
+  headings.forEach( heading => { //查找在页面上半部分的锚点是什么
+    if (!heading.id) return; //未分配锚点 id 的标题不参与
+    const sectionTop = heading.offsetTop;
+    const sectionHeight = heading.clientHeight;
     if( document.documentElement.scrollTop >= 180){ //滚动距离超过 180 后开始查找
       if(pageYOffset >= sectionTop - (document.documentElement.clientHeight - 112) / 2){
-        current = h3.getAttribute('id');
+        current = heading.getAttribute('id');
       }
     }
   })
-  anchor.forEach( a => {
+  // 每次滚动时重新查询：目录链接由下方脚本动态生成，加载时还不存在
+  document.querySelectorAll('.project-anchor, #blogCatalog a').forEach( a => {
     a.classList.remove('active');
-    if (a.classList.contains(current)) { //判断目录按钮的class是否包含当前页面中的的锚点id
+    if (current && a.classList.contains(current)) { //判断目录按钮的class是否包含当前页面中的的锚点id
       a.classList.add("active");
     }
   })
-  console.log(current)
 })
 // ▲▲ 目录随滚动高亮
 
-
-// ▼▼ Viewer.js
-window.addEventListener('DOMContentLoaded', function () {
-  var galley = document.getElementById('galley'); // 绑定图片组
-  var viewer = new Viewer(galley, {
-    url: 'data-src',  // 定义图片来源
-    title: function (image) {
-        return (this.index + 1) + ' / ' + this.length; // 显示当前/总数
-    },
-    toolbar: 0,
-    transition: 0,
-    zoomable: 0, // 每次缩放多少
-  });
-});
-// ▲▲ Viewer.js
 
 // ▼▼ 作品内页 - 宽度扩展按钮
 var projectContainer = document.getElementsByClassName('project-container')[0]
@@ -89,12 +74,15 @@ let catalogData = getArticleCatalog();
 if (catalogData != null) {
     // blogCatalog换成你的目录容器
     let wrapper = document.getElementById('blogCatalog');
-    wrapper.innerHTML = generateCatalog(catalogData);
+    if (catalogData.length > 0) {
+        wrapper.innerHTML = generateCatalog(catalogData);
+    } else {
+        wrapper.style.display = 'none'; // 无标题的文章不显示空目录
+    }
 }
 
 function getArticleCatalog(){
 let articleContent = document.getElementsByClassName('section-inner');
-console.log(articleContent)
 
 if (articleContent.length !== 1) {
   // alert('not found');
@@ -103,19 +91,25 @@ if (articleContent.length !== 1) {
 let catalog = [];
 let header = {};
 let elements = articleContent[0].childNodes; // 获取文章容器的子节点
-// 遍历所有元素 
+// 自动适配标题层级：文章用 ##/### 时以 h2 为一级、h3 为二级；用 ###/#### 时以 h3 为一级、h4 为二级
+let hasH2 = Array.prototype.some.call(elements, el => el.nodeName === 'H2');
+const TOP = hasH2 ? 'H2' : 'H3';
+const SUB = hasH2 ? 'H3' : 'H4';
+const prefix = hasH2 ? 'h2' : 'h3';
+// 遍历所有元素
 for (let i = 0; i < elements.length; i++) {
-  if (elements[i].nodeName === 'H3') {
-    elements[i].id = 'h3-' + catalog.length;
+  if (elements[i].nodeName === TOP) {
+    elements[i].id = prefix + '-' + catalog.length;
     header = {
+        id: elements[i].id,
         name: elements[i].innerText,
         childHeaders: []
     };
     catalog.push(header);
-  } else if (elements[i].nodeName === 'H4') {
-    elements[i].id = 'h3-' + (catalog.length - 1) + '-h4-' + header.childHeaders.length;
-    header.childHeaders.push(elements[i].innerText);
-    } 
+  } else if (elements[i].nodeName === SUB && header.name) {
+    elements[i].id = prefix + '-' + (catalog.length - 1) + '-h' + SUB.toLowerCase() + '-' + header.childHeaders.length;
+    header.childHeaders.push({ id: elements[i].id, name: elements[i].innerText });
+    }
   }
   return catalog;
 }
@@ -123,16 +117,12 @@ for (let i = 0; i < elements.length; i++) {
 function generateCatalog(catalogData) { // 添加目录标签
   let catalog = '<div style="font-weight: 600;font-size: 16px; padding-left: 8px;">文章目录</div>';
   for (let i = 0; i < catalogData.length; i++) {
-    let target = '#h3-' + i; // 跳转目标
-    // let index = (i + 0) + '. '; // 标题索引
-    let name = catalogData[i].name; // 标题
-    catalog += '<a href="' + target + '">' + name + '</a>';
+    // class 带上目标 id，供滚动高亮逻辑匹配
+    catalog += '<a href="#' + catalogData[i].id + '" class="' + catalogData[i].id + '">' + catalogData[i].name + '</a>';
 
     for (let i2 = 0; i2 < catalogData[i].childHeaders.length; i2++) {
-      target = '#h3-' + i + '-h4-' + i2; // 跳转目标
-      // index = (i + 0) + '.' + (i2 + 1) + '. '; // 标题索引
-      name = catalogData[i].childHeaders[i2]; // 标题
-      catalog += '  <a href="' + target + '" class="catalog-h4">' + name + '</a>'
+      let child = catalogData[i].childHeaders[i2];
+      catalog += '  <a href="#' + child.id + '" class="catalog-h4 ' + child.id + '">' + child.name + '</a>'
     }
   }
   return catalog;
