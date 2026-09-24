@@ -2349,21 +2349,13 @@ article .top-bar {
   display: block;
   height: 24px;
   width: auto;
-  padding: 4px 8px;
-  box-sizing: content-box;
   border-radius: var(--border-radius-sm);
-  background-color: #fff;
-  object-fit: contain;
 }
 
 @media (min-width: 576px) {
   .project .experience .icon {
     height: 28px;
   }
-}
-
-body.dark .project .experience .icon {
-  background-color: #fff; /* logo 自带配色，白底统一 */
 }
 
 .project .experience .qlchat .icon {

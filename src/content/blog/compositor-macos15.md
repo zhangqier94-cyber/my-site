@@ -1,8 +1,12 @@
 ---
 title: 一个设计师的 PS 平替移植记
 description: Adobe 用不了之后，我从微博刷到一款开源图像编辑器，下载下来被 macOS 拦下。然后用 AI 加一堆报错，把它搬到了自己的旧 Mac 上。
-company: personal
-cover: /img/works/compositor.jpg
+pubDate: 2026-09-24
+tags:
+  - macOS
+  - 开源
+  - 移植
+heroImage: /img/works/compositor.jpg
 ---
 
 Adobe 的软件用不了了，原因大家都知道。我日常出图改图切图都在它上面，得赶紧找个能替的。

@@ -11,8 +11,6 @@ export interface Company {
 }
 
 export const companies: Company[] = [
-  // ↓ 占位数据，改成你自己的真实经历
   { id: 'giti', name: '佳通轮胎', icon: '/img/company/giti.svg', order: 1 },
   { id: 'gtech', name: 'Gtech', icon: '/img/company/gtech.svg', order: 2 },
-  { id: 'personal', name: '个人项目', icon: '/img/company/personal.png', order: 3 },
 ];

@@ -1,7 +1,7 @@
 ---
 title: 佳应 App 组件库构建
 description: 佳应 App 的组件库做到第三版，我重新整理了组件的分类方式，并把每个组件的文档结构统一成固定的四块。六类，41 个组件。
-company: jiajiele
+company: giti
 cover: /img/works/jiaying-mobile-components/button.jpg
 ---
 

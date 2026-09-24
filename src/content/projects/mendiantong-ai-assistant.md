@@ -1,7 +1,7 @@
 ---
 title: 把 AI 助手做进门店通
 description: 驾捷乐门店通的经营助手，把 AI 从浮窗里的对话助手改成常驻在系统里的任务容器。小中大三种尺寸框架、承载结果的虚拟页面、多任务并行。
-company: jiajiele
+company: giti
 cover: /img/works/mendiantong-ai-assistant/01-entry.jpg
 ---
 

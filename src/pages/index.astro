@@ -7,16 +7,11 @@ import { contact } from '../data/contact';
 const allProjects = (await getCollection('projects', ({ data }) => !data.draft))
   .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
 
-// 按公司分组（顺序跟 src/data/companies.ts 走），没配公司的作品归入「其他作品」
+// 按公司分组（顺序跟 src/data/companies.ts 走）
 interface Group extends Company { items: typeof allProjects; }
 const groups: Group[] = companies
   .map(c => ({ ...c, items: allProjects.filter(p => p.data.company === c.id) }))
   .filter(g => g.items.length > 0);
-
-const orphans = allProjects.filter(p => !companies.some(c => c.id === p.data.company));
-if (orphans.length > 0) {
-  groups.push({ id: 'others', name: '其他作品', order: 99, items: orphans });
-}
 ---
 
 <Base title="作品 · 我的个人网站" description="我的作品集" pageClass="project">
