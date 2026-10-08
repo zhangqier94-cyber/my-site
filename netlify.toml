@@ -1,3 +1,6 @@
+# 【已停用】2026-10 起站点迁到 Cloudflare Pages，本文件不再生效，仅作回退参考。
+# 等效的响应头配置已搬到 public/_headers。
+#
 # Netlify 构建配置 — Astro 静态站点
 [build]
   command = "npm run build"

@@ -22,14 +22,14 @@ Obsidian 打开 ~/Documents/my-site（仓库根目录本身就是 vault）
         ↓ 保存 .md、往 public/img 放图片
 site-publish（或手动 git push origin main）
         ↓
-GitHub Actions：npm ci && astro build
+Cloudflare Pages 自动拉取构建（npm run build → dist）
         ↓
-netlify-cli deploy --prod
-        ↓
-https://zhangqier94-my-site.netlify.app
+https://zhangqier94-my-site.pages.dev
 ```
 
-关键点：**构建和部署都在云端完成**，Netlify 令牌存在仓库的 Actions secrets 里。所以任何一台装了 git 的电脑，只要能 push 到 main，网站就会自动更新——本机环境不是必要环节。
+关键点：**构建和部署都在云端完成**，Cloudflare 通过 GitHub 授权读取仓库，不需要在本地或 Actions 里存任何部署令牌。所以任何一台装了 git 的电脑，只要能 push 到 main，网站就会自动更新——本机环境不是必要环节。
+
+> 2026-10 从 Netlify 迁到 Cloudflare Pages。原因是 Netlify 改成 300 credits/月的共享额度池，一次超限整月封禁部署；Cloudflare 免费层是 500 次构建/月 + 不限带宽和请求。
 
 ### 新电脑要做的 5 件事
 
@@ -71,17 +71,21 @@ my-site/
 │   ├── content/
 │   │   ├── blog/                # 博客文章（Markdown）
 │   │   └── projects/            # 作品（Markdown）
+│   ├── data/
+│   │   ├── companies.ts         # 首页作品的公司分组配置
+│   │   └── contact.ts           # 「联系我」卡片里的手机号 / 邮箱
 │   ├── layouts/
 │   │   ├── Base.astro           # 公共布局（导航 + Footer）
 │   │   └── BlogPost.astro       # 博客详情布局
 │   ├── pages/
-│   │   ├── index.astro          # 首页
+│   │   ├── index.astro          # 首页（自我介绍 + 按公司分组的作品）
 │   │   ├── blog/                # 博客列表 + 博客详情
-│   │   ├── works/               # 作品列表 + 作品详情
+│   │   ├── works/               # 作品详情
 │   │   ├── about.astro          # 关于页
-│   │   ├── archive.astro        # 归档页
 │   │   └── rss.xml.js           # RSS feed
 │   └── content.config.ts        # 内容集合 schema
+├── public/
+│   └── _headers                 # Cloudflare 响应头配置
 ├── astro.config.mjs
 ├── package.json
 └── README.md
@@ -254,32 +258,34 @@ tags: []
 
 ---
 
-## 🚀 部署
+## 🚀 部署（当前：Cloudflare Pages）
 
-### 方案 A：Netlify（最简单）
+部署这一环**不需要本地做什么**，push 到 main 就自动上线。下面是当前配置的快照，出问题时对照检查。
 
-1. 把 `my-site/` 推到 GitHub
-2. 登录 [Netlify](https://app.netlify.com/) → Add new site → Import from Git
-3. 选你的仓库
-4. 配置：
-   - Build command: `npm run build`
-   - Publish directory: `dist`
-5. 点 Deploy，以后每次 `git push` 自动部署
+### 现在在用的配置
 
-### 方案 B：Vercel（同样简单，国内访问稍慢）
+| 项 | 值 |
+|---|---|
+| 平台 | Cloudflare Pages（免费层：500 次构建/月、带宽与请求不限） |
+| 接入方式 | Git 集成（授权 GitHub 后自动拉代码构建） |
+| 构建命令 | `npm run build` |
+| 输出目录 | `dist` |
+| 环境变量 | `NODE_VERSION = 22`（不设的话 Cloudflare 默认 Node 版本偏旧，构建会挂） |
+| 线上地址 | https://zhangqier94-my-site.pages.dev |
+| 响应头 | `public/_headers`（安全头 + `_astro` 长期缓存） |
 
-类似 Netlify，导入项目即可，Astro 默认配置自动识别。
+### 如果哪天要重新接一次
 
-### 方案 C：CloudStudio（国内访问快）
+1. 登录 [Cloudflare Dashboard](https://dash.cloudflare.com/) → 左侧 **Workers 和 Pages** → **创建** → **Pages** → **连接到 Git**
+2. 授权 GitHub，选中 `zhangqier94-cyber/my-site`
+3. 构建配置填上表里的三项（命令 / 输出目录 / `NODE_VERSION`）
+4. 保存并部署，之后每次 push 自动生效
 
-WorkBuddy 内置 `workbuddy_cloudstudio_deploy` 工具，可以一行命令部署：
+### 其它可选平台
 
-```bash
-# 先构建
-npm run build
-
-# 部署 my-site/dist/
-```
+- **Netlify**：2026-10 之前用的，免费层改成 300 credits/月的共享额度池后容易撞墙，配置留在 `netlify.toml` 里仅供参考
+- **Vercel**：导入仓库即可，Astro 自动识别；国内访问偏慢
+- **GitHub Pages**：仓库是公开的，可用；但站点会挂在 `/my-site/` 子路径下，站内绝对路径全部要改（当前没有采用）
 
 ---
 
@@ -329,7 +335,7 @@ git init
 git add .
 git commit -m "Initial commit"
 gh repo create my-site --public --source=. --remote=origin --push
-# 然后去 Netlify/Vercel 选这个仓库即可
+# 然后去 Cloudflare Pages 连接这个仓库即可（见上面「部署」一节）
 ```
 
 ---
